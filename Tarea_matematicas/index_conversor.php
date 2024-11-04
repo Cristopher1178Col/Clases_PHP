@@ -1,39 +1,42 @@
 <?php
-$resultado = '';
+function caracterizarTriangulo($lado1, $lado2, $lado3) {
+    
+    if ($lado1 + $lado2 <= $lado3 || $lado1 + $lado3 <= $lado2 || $lado2 + $lado3 <= $lado1) {
+        return "Los lados ingresados no forman un triángulo válido.";
+    }
 
+    if ($lado1 == $lado2 && $lado2 == $lado3) {
+        $tipoLado = "Equilátero";
+    } elseif ($lado1 == $lado2 || $lado2 == $lado3 || $lado1 == $lado3) {
+        $tipoLado = "Isósceles";
+    } else {
+        $tipoLado = "Escaleno";
+    }
+
+    // Calcular angulos (GPT)
+    $angulo1 = rad2deg(acos(($lado2**2 + $lado3**2 - $lado1**2) / (2 * $lado2 * $lado3)));
+    $angulo2 = rad2deg(acos(($lado1**2 + $lado3**2 - $lado2**2) / (2 * $lado1 * $lado3)));
+    $angulo3 = 180 - $angulo1 - $angulo2;
+
+
+    if ($angulo1 < 90 && $angulo2 < 90 && $angulo3 < 90) {
+        $tipoAngulo = "Acutángulo";
+    } elseif ($angulo1 == 90 || $angulo2 == 90 || $angulo3 == 90) { 
+        $tipoAngulo = "Rectángulo";
+    } else {
+        $tipoAngulo = "Obtusángulo";
+    }
+
+    return "El triángulo es: $tipoLado y $tipoAngulo.<br>Ángulos: <br>A " . round($angulo1, 2) . "°. <br>B " . round($angulo2, 2) . "°. <br>C " . round($angulo3, 2) . "°." ."<br>Lados:<br>a: " . round($lado1) . "<br>b: " . round($lado2) . "<br>c: " . round($lado3);
+}
+
+$resultado = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lado1 = $_POST['lado1'];
     $lado2 = $_POST['lado2'];
     $lado3 = $_POST['lado3'];
-    $angulo1 = $_POST['angulo1'];
-    $angulo2 = $_POST['angulo2'];
-    $angulo3 = $_POST['angulo3'];
-
-    $tipoLado = '';
-    $tipoAngulo = '';
-
-    if ($lado1 == $lado2 && $lado2 == $lado3) {
-        $tipoLado = 'Equilátero';
-    } elseif ($lado1 == $lado2 || $lado2 == $lado3 || $lado1 == $lado3) {
-        $tipoLado = 'Isósceles';
-    } else {
-        $tipoLado = 'Escaleno';
-    }
-
-    if ($angulo1 < 90 && $angulo2 < 90 && $angulo3 < 90) {
-        $tipoAngulo = 'Acutángulo';
-    } elseif ($angulo1 == 90 || $angulo2 == 90 || $angulo3 == 90) {
-        $tipoAngulo = 'Rectángulo';
-    } else {
-        $tipoAngulo = 'Obtusángulo';
-    }
-
-    $resultado = "El triángulo es: $tipoLado y $tipoAngulo.";
-    header("Location: " . $_SERVER['PHP_SELF'] . "?resultado=" . urlencode($resultado));
-    exit();
+    $resultado = caracterizarTriangulo($lado1, $lado2, $lado3);
 }
-
-$resultado = isset($_GET['resultado']) ? $_GET['resultado'] : '';
 ?>
 
 <!DOCTYPE html>
@@ -48,42 +51,24 @@ $resultado = isset($_GET['resultado']) ? $_GET['resultado'] : '';
     <div class="container mt-5">
         <h1 class="text-center">Caracterización de Triángulo</h1>
 
-        <form id="triangulo-form" method="POST" class="mt-4">
+        <form method="POST" class="mt-4">
             <div class="row">
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="lado1" class="form-label">Lado 1</label>
-                        <input type="number" id="lado1" name="lado1" class="form-control" placeholder="Ingrese el lado 1" >
+                        <input type="number" id="lado1" name="lado1" class="form-control" placeholder="Ingrese el lado 1 (cm)" required>
                     </div>  
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="lado2" class="form-label">Lado 2</label>
-                        <input type="number" id="lado2" name="lado2" class="form-control" placeholder="Ingrese el lado 2" >
+                        <input type="number" id="lado2" name="lado2" class="form-control" placeholder="Ingrese el lado 2 (cm)" required>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="lado3" class="form-label">Lado 3</label>
-                        <input type="number" id="lado3" name="lado3" class="form-control" placeholder="Ingrese el lado 3" >
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label for="angulo1" class="form-label">Ángulo 1 (°)</label>
-                        <input type="number" id="angulo1" name="angulo1" class="form-control" placeholder="Ingrese el ángulo 1" >
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label for="angulo2" class="form-label">Ángulo 2 (°)</label>
-                        <input type="number" id="angulo2" name="angulo2" class="form-control" placeholder="Ingrese el ángulo 2" >
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label for="angulo3" class="form-label">Ángulo 3 (°)</label>
-                        <input type="number" id="angulo3" name="angulo3" class="form-control" placeholder="Ingrese el ángulo 3" >
+                        <input type="number" id="lado3" name="lado3" class="form-control" placeholder="Ingrese el lado 3 (cm)" required>
                     </div>
                 </div>
                 <div class="col-12">
